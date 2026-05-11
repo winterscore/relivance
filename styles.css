@@ -535,7 +535,10 @@ body {
 }
 
 .footer-sep {
-  opacity: 0.6;
+  /* Heavier than the previous 0.6 opacity middle-dot (·). Now uses the
+     full BULLET character (•) at full strength so the separators read
+     as deliberate punctuation rather than as decorative dust. */
+  opacity: 1;
 }
 
 /* Desktop wordmark steps up slightly so the "Relivance" headline holds
