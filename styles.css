@@ -55,8 +55,7 @@
      "Upload LinkedIn Archive" capsule (LinkedInImportSheet.swift:356,
      #0A66C2). Slightly cooler and more saturated than the iOS system
      blue — feels intentional and brand-coded rather than borrowed
-     from the OS. Light mode only; dark mode falls back to wvAccent
-     (the iOS system blue holds up better on a near-black surface). */
+     from the OS. Applied in both light and dark mode. */
   --cta-blue: #0a66c2;
 
   /* Fluid type scale anchored on the iOS pt sizes. The wordmark is
@@ -82,11 +81,9 @@
     --wv-secondary:  #676a6f; /*  rgb(103, 106, 111) */
     --wv-surface:    #222224; /*  rgb(34, 34, 36)    */
     --wv-border:     #2a2a2d; /*  rgb(42, 42, 45)    */
-    /* Dark mode: the LinkedIn-import blue (#0A66C2) reads heavy on
-       a near-black surface. Fall back to the iOS system blue, which
-       has a slightly higher luminance and reads brighter without
-       losing the "primary CTA" weight. */
-    --cta-blue: var(--wv-accent);
+    /* --cta-blue intentionally NOT overridden here — the LinkedIn
+       brand blue applies in both light and dark mode so the CTA
+       reads consistently across appearances. */
   }
 }
 
