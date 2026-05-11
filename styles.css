@@ -604,20 +604,31 @@ body.doc {
   }
 }
 
+/* The brand stack at the top of each doc page mirrors the home page's
+   layout — logo centered above the "Relivance" wordmark — just at a
+   smaller, compact scale (logo ~1/3 the size of the home hero). The
+   doc-stage itself stays left-aligned for the body copy below, so the
+   centered header sits as a clear brand moment at the top of the page
+   without disturbing the legal-document reading rhythm beneath. */
 .doc-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
   margin: 0 0 40px;
 }
 
 .doc-header a {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  /* Tight 8px between logo and wordmark — matches the home page's
+     gap-to-logo-size ratio (24/160 ≈ 0.15) at the doc-page scale
+     (8/56 ≈ 0.14). The stack reads as one element, not two. */
+  gap: 8px;
   text-decoration: none;
   color: inherit;
   border-radius: 8px;
+  padding: 4px 8px;
 }
 
 .doc-header a:focus-visible {
@@ -626,9 +637,13 @@ body.doc {
 }
 
 .doc-logo {
-  width: 32px;
-  height: 32px;
+  width: 56px;
+  height: 56px;
   display: block;
+  /* Same -2px optical-centre nudge the home logo uses (proportionally
+     scaled from -6px at 160px down to -2px at 56px). The brand block
+     reads as visually balanced instead of low-anchored. */
+  margin-bottom: -2px;
 }
 
 .doc-logo img {
@@ -641,8 +656,9 @@ body.doc {
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
-  font-size: 17px;
-  letter-spacing: -0.01em;
+  font-size: 22px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   color: var(--wv-primary);
 }
 
