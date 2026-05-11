@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0C0C0E" media="(prefers-color-scheme: dark)" />
+
+    <title>Relivance — Your network is bigger than your memory.</title>
+    <meta
+      name="description"
+      content="Relivance is a premium relationship-intelligence app for iOS. Coming Soon."
+    />
+
+    <!-- Open Graph / social previews -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Relivance" />
+    <meta
+      property="og:description"
+      content="Your network is bigger than your memory. Coming Soon."
+    />
+    <meta property="og:url" content="https://relivance.app/" />
+    <meta property="og:image" content="https://relivance.app/assets/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Relivance" />
+    <meta
+      name="twitter:description"
+      content="Your network is bigger than your memory. Coming Soon."
+    />
+    <meta name="twitter:image" content="https://relivance.app/assets/og-image.svg" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="apple-touch-icon" href="assets/favicon.svg" />
+
+    <!-- Roboto, matching the app's wordmark + slogan typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="stage" role="main">
+      <section class="brand" aria-label="Relivance brand">
+        <picture class="logo" aria-hidden="true">
+          <source srcset="assets/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+          <img src="assets/logo-light.svg" alt="" width="160" height="160" />
+        </picture>
+
+        <h1 class="wordmark">Relivance</h1>
+
+        <p class="slogan">Your network is bigger than your memory.</p>
+      </section>
+
+      <p class="status" aria-live="polite">Coming Soon</p>
+    </main>
+
+    <footer class="footer">
+      <small>&copy; <span id="year">2026</span> Relivance LLC</small>
+    </footer>
+
+    <script>
+      // Year auto-roll. One line, no framework. Falls back to the
+      // hardcoded year above if scripts are disabled.
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

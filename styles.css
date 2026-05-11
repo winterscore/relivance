@@ -1,0 +1,221 @@
+/* =========================================================================
+   Relivance — landing page styles
+   Match the iOS login screen (AuthView.swift) exactly:
+     - Same background (wvBackground), same primary/secondary text colors.
+     - Same Roboto SemiBold 40pt wordmark + Roboto Regular 17pt slogan.
+     - Same launch-screen SVG, same light/dark gradient treatment.
+   No framework, no JS-driven layout. Pure CSS + system fonts fallback.
+   ======================================================================== */
+
+:root {
+  /* Light-mode palette (from Assets.xcassets/wv*.colorset) */
+  --wv-background: #ffffff;
+  --wv-primary: #1d1f27;     /*  rgb(29, 31, 39)   — body + headlines  */
+  --wv-secondary: #6a6d75;   /*  rgb(106, 109, 117) — quiet text       */
+  --wv-surface: #f1f2f3;     /*  rgb(241, 242, 243) — pill / capsules  */
+  --wv-border: #e2e2e5;      /*  rgb(226, 226, 229) — hairline borders */
+  --wv-accent: #0a84ff;      /*  rgb(10, 132, 255)  — Apple system blue */
+
+  /* Fluid type scale anchored on the iOS pt sizes. The wordmark is
+     40pt on iOS; we let it scale a touch larger on big screens and
+     not below 32px on phones. The slogan locks 16–19px range. */
+  --t-wordmark: clamp(34px, 5vw, 48px);
+  --t-slogan:   clamp(15px, 1.6vw, 19px);
+  --t-status:   13px;
+  --t-footer:   11px;
+
+  /* Vertical rhythm: match the AuthView VStack(spacing:) values. */
+  --gap-logo-title: 24px;     /* outer stack spacing */
+  --gap-title-slogan: 10px;   /* inner stack spacing */
+  --gap-brand-status: 56px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wv-background: #0c0c0e; /*  rgb(12, 12, 14)    */
+    --wv-primary:    #dcdee3; /*  rgb(220, 222, 227) */
+    --wv-secondary:  #676a6f; /*  rgb(103, 106, 111) */
+    --wv-surface:    #222224; /*  rgb(34, 34, 36)    */
+    --wv-border:     #2a2a2d; /*  rgb(42, 42, 45)    */
+  }
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  /* Use 100svh on iOS Safari to avoid the address-bar-jumping
+     viewport-height bug; fall back to 100vh elsewhere. */
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--wv-background);
+  color: var(--wv-primary);
+  /* Inter is the font Linear & many modern app marketing sites
+     reach for. We ship Roboto specifically because the iOS app
+     uses Roboto SemiBold for the wordmark — keeping the web side
+     pixel-faithful to the app's typography. System fonts cover the
+     micro-second between page-paint and Roboto-load. */
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Outer layout: brand block centred, status pill below, footer pinned. */
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-brand-status);
+  min-height: calc(100vh - 64px);
+  min-height: calc(100svh - 64px);
+  padding: 64px 24px 0;
+  /* Account for safe-area on devices with rounded corners / notches.
+     The bottom is handled by the footer; the top picks up the inset
+     here so the brand block doesn't crash into a Dynamic Island. */
+  padding-top: max(64px, env(safe-area-inset-top));
+  text-align: center;
+}
+
+/* The brand block (logo + wordmark + slogan) mirrors AuthView's
+   VStack: outer 24pt between logo and title, inner 10pt between
+   title and slogan. */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-logo-title);
+}
+
+.logo {
+  display: block;
+  width: clamp(120px, 22vw, 160px);
+  height: clamp(120px, 22vw, 160px);
+  /* The same small upward optical-centre nudge AuthView applies via
+     .offset(y: -6). Subtle, but the brand block reads as "balanced"
+     instead of "low" because of it. */
+  margin-bottom: -6px;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Inner stack: 10pt between wordmark and slogan. */
+.brand > h1,
+.brand > p {
+  margin: 0;
+}
+
+.brand > h1 + p {
+  margin-top: calc(var(--gap-title-slogan) - var(--gap-logo-title));
+}
+
+.wordmark {
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: var(--t-wordmark);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--wv-primary);
+}
+
+.slogan {
+  font-weight: 400;
+  font-size: var(--t-slogan);
+  line-height: 1.4;
+  color: var(--wv-primary);
+  /* No max-width: the slogan should land on a single line at every
+     viewport width down to ~320px (iPhone SE). On the smallest
+     phones the fluid `clamp()` font scale already drops the size
+     to 15px, which keeps the sentence under the available width.
+     The only case where this still wraps is when the user has
+     bumped iOS / Safari text size well above 100% — graceful
+     wrapping there is correct, not a bug. */
+}
+
+/* Coming-soon capsule: subtle grey pill, no border, no dot.
+   Background is hardcoded so the capsule has its own deliberate
+   tone independent of the global surface token — the latter is
+   shared with input pills inside the app, while this pill needs
+   to read as slightly quieter on the marketing surface. */
+.status {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #ededee;
+  color: var(--wv-secondary);
+  font-size: var(--t-status);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+/* Dark mode: matched dark-surface hex, plus lift the text toward
+   wvPrimary so it reads clearly above the pill while still feeling
+   subordinate to the wordmark. */
+@media (prefers-color-scheme: dark) {
+  .status {
+    background: #232326;
+    color: #a0a4ab;
+  }
+}
+
+/* Footer sits flush to the bottom, generous on tap height for
+   accessibility even though there's no interactive content there. */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 24px max(16px, env(safe-area-inset-bottom));
+  text-align: center;
+  color: var(--wv-secondary);
+  font-size: var(--t-footer);
+  letter-spacing: 0.04em;
+}
+
+.footer small {
+  font-size: inherit;
+}
+
+/* Tablet & desktop: a bit more breathing room above the brand
+   block. The slogan already fits on a single line at every
+   viewport thanks to the unconstrained .slogan rule above —
+   nothing to override here. */
+@media (min-width: 768px) {
+  .stage {
+    gap: 72px;
+    padding-top: max(96px, env(safe-area-inset-top));
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --t-wordmark: clamp(40px, 4vw, 56px);
+  }
+  .stage {
+    gap: 80px;
+  }
+}
+
+/* Print: unstick the footer so a printed copy doesn't lose it. */
+@media print {
+  .footer {
+    position: static;
+    margin-top: 64px;
+  }
+}

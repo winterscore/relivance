@@ -1,0 +1,31 @@
+<svg
+  viewBox="0 0 160 160"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="Relivance symbol"
+>
+  <defs>
+    <linearGradient
+      id="circleGradient"
+      x1="4"
+      y1="4"
+      x2="156"
+      y2="156"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#62A6F9" />
+      <stop offset="100%" stop-color="#3D89F7" />
+    </linearGradient>
+  </defs>
+  <circle cx="80" cy="80" r="76" fill="url(#circleGradient)" />
+  <line
+    x1="58"
+    y1="114"
+    x2="100"
+    y2="44"
+    stroke="#FFFFFF"
+    stroke-width="12"
+    stroke-linecap="round"
+  />
+</svg>

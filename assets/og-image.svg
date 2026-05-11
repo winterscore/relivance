@@ -1,0 +1,39 @@
+<svg
+  width="1200"
+  height="630"
+  viewBox="0 0 1200 630"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="Relivance — Your network is bigger than your memory."
+>
+  <defs>
+    <linearGradient id="discGradient" x1="544" y1="216" x2="696" y2="368" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#62A6F9" />
+      <stop offset="100%" stop-color="#3D89F7" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#FFFFFF" />
+  <g transform="translate(620 220) scale(1.4)">
+    <circle cx="0" cy="0" r="76" fill="url(#discGradient)" transform="translate(-80 -80) translate(80 80)" />
+    <line x1="-22" y1="34" x2="20" y2="-36" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" />
+  </g>
+  <text
+    x="600"
+    y="445"
+    text-anchor="middle"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="80"
+    font-weight="600"
+    fill="#1D1F27"
+    letter-spacing="-1.5"
+  >Relivance</text>
+  <text
+    x="600"
+    y="510"
+    text-anchor="middle"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="30"
+    font-weight="400"
+    fill="#1D1F27"
+  >Your network is bigger than your memory.</text>
+</svg>
