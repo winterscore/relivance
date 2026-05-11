@@ -237,7 +237,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  /* Reduced from 12px → 8px to match the visual rhythm of the form
+     itself. The form has its own `gap: 12px` between the input pill
+     and the submit pill — those two pills have no line-height
+     padding, so 12px IS the visual gap. The heading above does have
+     line-height padding (~4px below the text), so a 12px CSS gap
+     between heading and input would read as ~16px visually. Using
+     8px here compensates: 8 + 4 ≈ 12px visual, matching the
+     input → button gap exactly. */
+  gap: 8px;
   width: 100%;
   max-width: 360px;
   margin: 0;
@@ -472,7 +480,12 @@ body {
 .footer {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  /* nowrap is deliberate. The footer contents (copyright, separator,
+     Privacy/Terms nav) total ~250–280px and fit on a single row at
+     every viewport down to ~320px (iPhone SE portrait). Forcing
+     nowrap stops any zoom / font-scaling / RTL edge case from
+     producing the old two-row stack. */
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 5px;
@@ -533,7 +546,7 @@ body {
 }
 
 /* =========================================================================
-   Document pages (privacy.html / terms.html)
+   Document pages (/privacy/, /terms/)
    Same palette + typography as the home page, just a top-anchored
    left-aligned layout instead of the centered hero. The footer flows
    naturally with the document (no fixed positioning) so long copy can
