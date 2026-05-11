@@ -293,6 +293,68 @@ body {
   }
 }
 
+/* ── Success state ──────────────────────────────────────────────────
+   After submit lands:
+   • Input greys out (still readable, still showing the typed email,
+     but visibly locked in)
+   • Button label swaps to "Success" + checkmark.circle.fill icon
+   • Both controls become non-interactive
+   Same button size, same overall layout — only the content morphs.
+*/
+.access-submit-success {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.access-submit-success svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.access-form[data-state="success"] .access-input {
+  /* "Greyed out" treatment: muted background, secondary text colour,
+     no interaction. Keeps the email visible so the user remembers
+     what they submitted. */
+  background: var(--wv-surface);
+  color: var(--wv-secondary);
+  cursor: default;
+  /* Soft fade gives a subtle "this is locked in" feel without
+     fully hiding the value. */
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.access-form[data-state="success"] .access-input:focus-visible {
+  /* No focus ring once disabled — there is no editing to do. */
+  box-shadow: none;
+}
+
+.access-form[data-state="success"] .access-submit {
+  pointer-events: none;
+  cursor: default;
+}
+
+.access-form[data-state="success"] .access-submit-label {
+  visibility: hidden;
+}
+
+.access-form[data-state="success"] .access-submit-spinner {
+  display: none;
+}
+
+.access-form[data-state="success"] .access-submit-success {
+  display: inline-flex;
+}
+
 .access-error {
   margin: -4px 0 0;
   font-size: 12.5px;
@@ -302,26 +364,9 @@ body {
   text-align: left;
 }
 
-/* Success state replaces the form + note. Same surface as the input
-   pill, full-width on phones, capped at the form's max-width. Echoes
-   the calm of the rest of the page — no celebratory emojis, no
-   confetti, just a confirmation. */
-.access-success {
-  margin: 0;
-  padding: 14px 18px;
-  width: 100%;
-  border-radius: 14px;
-  background: var(--wv-surface);
-  color: var(--wv-primary);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: 0.01em;
-  text-align: center;
-}
-
 /* Visually-hidden but still announced by screen readers. Used for the
-   <label> that pairs with the email input. */
+   <label> that pairs with the email input AND for the success live
+   region that announces submission to assistive tech. */
 .visually-hidden {
   position: absolute;
   width: 1px;

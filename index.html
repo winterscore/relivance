@@ -109,14 +109,44 @@
           <button type="submit" class="access-submit">
             <span class="access-submit-label">Request Early Access</span>
             <span class="access-submit-spinner" aria-hidden="true"></span>
+            <span class="access-submit-success" aria-hidden="true">
+              Success
+              <svg
+                viewBox="0 0 16 16"
+                width="18"
+                height="18"
+                role="img"
+                aria-label="Success"
+              >
+                <!--
+                  SF Symbol "checkmark.circle.fill" replicated in SVG.
+                  White filled disc; the checkmark is the disc's
+                  cutout, so the button's accent-blue background
+                  shows through inside the checkmark shape — exactly
+                  how the SF Symbol renders when tinted white over a
+                  coloured surface in iOS.
+                -->
+                <path
+                  fill="#ffffff"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16Zm-.81-4.71 4.79-5.6-.99-.85-4.13 4.83-2.13-2.13-.99.99 2.71 2.71.39.39.35-.34Z"
+                />
+              </svg>
+            </span>
           </button>
 
           <p id="access-error" class="access-error" role="alert" hidden></p>
         </form>
 
-        <p id="access-success" class="access-success" role="status" hidden>
-          You&rsquo;re on the early access list.
-        </p>
+        <!--
+          Visually-hidden live region for screen readers. The visible
+          success state lives inside the button itself, but assistive
+          tech doesn't always announce a button label changing. This
+          polite live region announces "You're on the early access
+          list." when the form transitions to its success state.
+        -->
+        <p id="access-success" class="visually-hidden" role="status" aria-live="polite"></p>
       </section>
     </main>
 
@@ -164,8 +194,15 @@
         };
 
         const showSuccess = function () {
-          form.hidden = true;
-          successEl.hidden = false;
+          // Lock the form into the success state without removing it:
+          // input greys out + disables, button morphs to the
+          // "Success ✓" treatment. The whole form stays on screen
+          // so the user sees the locked-in email they just submitted.
+          form.setAttribute("data-state", "success");
+          emailInput.disabled = true;
+          emailInput.readOnly = true;
+          // Announce via the visually-hidden live region for SR users.
+          successEl.textContent = "You’re on the early access list.";
         };
 
         form.addEventListener("submit", async function (event) {
