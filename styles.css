@@ -22,7 +22,9 @@
   --t-wordmark: clamp(34px, 5vw, 48px);
   --t-slogan:   clamp(15px, 1.6vw, 19px);
   --t-status:   13px;
-  --t-footer:   11px;
+  /* Footer copy size matches apple.com's footer (12px SF Pro Regular,
+     no letter-spacing). 11px reads stingy; 12px reads premium. */
+  --t-footer:   12px;
 
   /* Vertical rhythm: match the AuthView VStack(spacing:) values. */
   --gap-logo-title: 24px;     /* outer stack spacing */
@@ -70,20 +72,20 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Outer layout: brand block centred, status pill below, footer pinned. */
+/* Outer layout: brand block centred, capture form below, footer pinned.
+   Bottom padding reserves room for the now two-line footer (copy +
+   legal links) so the form's privacy note never crashes into it. */
 .stage {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--gap-brand-status);
-  min-height: calc(100vh - 64px);
-  min-height: calc(100svh - 64px);
-  padding: 64px 24px 0;
-  /* Account for safe-area on devices with rounded corners / notches.
-     The bottom is handled by the footer; the top picks up the inset
-     here so the brand block doesn't crash into a Dynamic Island. */
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 64px 24px 96px;
   padding-top: max(64px, env(safe-area-inset-top));
+  padding-bottom: max(96px, calc(env(safe-area-inset-bottom) + 80px));
   text-align: center;
 }
 
@@ -147,49 +149,247 @@ body {
      wrapping there is correct, not a bug. */
 }
 
-/* Coming-soon capsule: subtle grey pill, no border, no dot.
-   Background is hardcoded so the capsule has its own deliberate
-   tone independent of the global surface token — the latter is
-   shared with input pills inside the app, while this pill needs
-   to read as slightly quieter on the marketing surface. */
-.status {
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 999px;
-  background: #ededee;
-  color: var(--wv-secondary);
-  font-size: var(--t-status);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+/* =========================================================================
+   Early-access capture
+   Mirrors the iOS AuthView credentials stage one-for-one:
+     - 14px corner-radius input pill filled with wvSurface
+     - Accent-blue capsule submit button
+     - 12pt vertical gap between input and button (same as VStack(spacing:12))
+     - Same disabled / loading semantics
+   Layout is always stacked (input above button) — the AuthView form is
+   stacked too, and on a single-field early-access form this keeps the
+   visual weight of the CTA where it belongs.
+   ======================================================================== */
+
+.access {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
   margin: 0;
 }
 
-/* Dark mode: matched dark-surface hex, plus lift the text toward
-   wvPrimary so it reads clearly above the pill while still feeling
-   subordinate to the wordmark. */
-@media (prefers-color-scheme: dark) {
-  .status {
-    background: #232326;
-    color: #a0a4ab;
+.access-heading {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--wv-secondary);
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.access-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin: 4px 0 0;
+}
+
+.access-input {
+  width: 100%;
+  /* Match the submit button's height + capsule shape so the two
+     pills read as a paired stack. The button (54px / 999px radius)
+     is the source of truth for this surface — the field follows. */
+  height: 54px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--wv-surface);
+  color: var(--wv-primary);
+  font-family: inherit;
+  font-size: 16px;        /* 16px prevents iOS Safari auto-zoom on focus */
+  font-weight: 400;
+  letter-spacing: 0;
+  outline: none;
+  transition: box-shadow 160ms ease, background-color 160ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.access-input::placeholder {
+  color: var(--wv-secondary);
+  opacity: 1;             /* Firefox defaults to 0.54; normalize */
+}
+
+.access-input:focus-visible {
+  box-shadow: inset 0 0 0 1.5px var(--wv-accent);
+}
+
+.access-input[aria-invalid="true"] {
+  /* Same Apple system red the app uses for inline error states. */
+  box-shadow: inset 0 0 0 1.5px #ea524d;
+}
+
+.access-submit {
+  position: relative;
+  width: 100%;
+  height: 54px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--wv-accent);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: opacity 160ms ease, transform 80ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.access-submit:hover {
+  opacity: 0.94;
+}
+
+.access-submit:active {
+  transform: scale(0.985);
+}
+
+.access-submit:focus-visible {
+  outline: 2px solid var(--wv-accent);
+  outline-offset: 3px;
+}
+
+/* While the fetch is in flight: hide the label, show a soft spinner.
+   The button stays the same size so the layout doesn't reflow. */
+.access-form[data-state="submitting"] .access-submit {
+  pointer-events: none;
+  opacity: 0.85;
+}
+.access-form[data-state="submitting"] .access-submit-label {
+  visibility: hidden;
+}
+.access-form[data-state="submitting"] .access-submit-spinner {
+  display: inline-block;
+}
+
+.access-submit-spinner {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  animation: access-spin 0.8s linear infinite;
+}
+
+@keyframes access-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-/* Footer sits flush to the bottom, generous on tap height for
-   accessibility even though there's no interactive content there. */
+@media (prefers-reduced-motion: reduce) {
+  .access-submit-spinner {
+    animation: none;
+  }
+}
+
+.access-error {
+  margin: -4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: #ea524d;
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+
+/* Success state replaces the form + note. Same surface as the input
+   pill, full-width on phones, capped at the form's max-width. Echoes
+   the calm of the rest of the page — no celebratory emojis, no
+   confetti, just a confirmation. */
+.access-success {
+  margin: 0;
+  padding: 14px 18px;
+  width: 100%;
+  border-radius: 14px;
+  background: var(--wv-surface);
+  color: var(--wv-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+/* Visually-hidden but still announced by screen readers. Used for the
+   <label> that pairs with the email input. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Footer sits flush to the bottom on the home page (position: fixed),
+   normal flow on document pages (privacy / terms — see .doc-stage
+   below, which overrides .footer to static so a long doc can scroll
+   the footer in naturally). */
 .footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   padding: 16px 24px max(16px, env(safe-area-inset-bottom));
   text-align: center;
   color: var(--wv-secondary);
   font-size: var(--t-footer);
-  letter-spacing: 0.04em;
+  line-height: 1.35;       /* Apple-style footer leading */
 }
 
-.footer small {
+.footer-copy {
   font-size: inherit;
+}
+
+.footer-nav {
+  display: inline-flex;
+  align-items: center;
+  /* Tight 5px on each side of the · separator. Adding horizontal
+     padding to the links would compound with this gap and produce
+     the previous too-wide "Privacy   ·   Terms" rendering. */
+  gap: 5px;
+  font-size: inherit;
+}
+
+.footer-nav a {
+  color: var(--wv-secondary);
+  text-decoration: none;
+  /* Vertical-only padding keeps the focus ring tall enough without
+     widening the spacing around the · separator. */
+  padding: 2px 0;
+  border-radius: 4px;
+  transition: color 120ms ease;
+}
+
+.footer-nav a:hover,
+.footer-nav a:focus-visible {
+  color: var(--wv-primary);
+}
+
+.footer-nav a:focus-visible {
+  outline: 2px solid var(--wv-accent);
+  outline-offset: 2px;
+}
+
+.footer-sep {
+  opacity: 0.6;
 }
 
 /* Tablet & desktop: a bit more breathing room above the brand
@@ -210,6 +410,188 @@ body {
   .stage {
     gap: 80px;
   }
+}
+
+/* =========================================================================
+   Document pages (privacy.html / terms.html)
+   Same palette + typography as the home page, just a top-anchored
+   left-aligned layout instead of the centered hero. The footer flows
+   naturally with the document (no fixed positioning) so long copy can
+   scroll the footer in at the bottom.
+   ======================================================================== */
+
+body.doc {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.doc-stage {
+  flex: 1;
+  width: 100%;
+  /* Editorial-document max-width. Modern legal / docs pages on
+     premium apps land in the 720–800px range so a line of 15px
+     body text holds 65–75 characters per line — the comfort-zone
+     for long-form reading. 640px (the previous value) was sized
+     for a phone reading view, not a desktop one. */
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  padding-top: max(48px, calc(env(safe-area-inset-top) + 32px));
+  text-align: left;
+}
+
+/* Tablet up: more generous side gutters so the content column
+   doesn't feel slammed against the viewport edge once the page
+   has more horizontal room. */
+@media (min-width: 768px) {
+  .doc-stage {
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: max(64px, calc(env(safe-area-inset-top) + 48px));
+    padding-bottom: 80px;
+  }
+}
+
+/* Wide desktop: large top breathing room so a long legal page
+   opens with a calm, premium feel rather than dropping the reader
+   straight onto the title. */
+@media (min-width: 1280px) {
+  .doc-stage {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+}
+
+.doc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 40px;
+}
+
+.doc-header a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+}
+
+.doc-header a:focus-visible {
+  outline: 2px solid var(--wv-accent);
+  outline-offset: 4px;
+}
+
+.doc-logo {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+.doc-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.doc-name {
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: var(--wv-primary);
+}
+
+.doc-title {
+  margin: 0 0 8px;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: clamp(26px, 3.2vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--wv-primary);
+}
+
+.doc-meta {
+  margin: 0 0 32px;
+  font-size: 13px;
+  color: var(--wv-secondary);
+  letter-spacing: 0.01em;
+}
+
+.doc-section {
+  margin: 0 0 28px;
+}
+
+.doc-section h2 {
+  margin: 0 0 8px;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--wv-primary);
+}
+
+.doc-section p,
+.doc-section li {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--wv-primary);
+}
+
+.doc-section p:last-child,
+.doc-section li:last-child {
+  margin-bottom: 0;
+}
+
+.doc-section a {
+  color: var(--wv-accent);
+  text-decoration: none;
+}
+
+.doc-section a:hover,
+.doc-section a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.doc-section ul {
+  margin: 0 0 10px;
+  padding: 0 0 0 18px;
+}
+
+.doc-section .doc-address {
+  display: block;
+  font-style: normal;
+  color: var(--wv-primary);
+  line-height: 1.55;
+}
+
+.doc-section .doc-address-label {
+  display: block;
+  color: var(--wv-secondary);
+  /* Font-size and weight inherit from .doc-section p (15px / 400) so
+     this label reads as a peer of the address lines beneath it — only
+     the colour is dialled down to wvSecondary to keep the visual
+     hierarchy. */
+  margin-bottom: 4px;
+}
+
+/* On document pages the footer flows naturally instead of fixing to
+   the bottom of the viewport — long copy should scroll past the
+   footer cleanly. */
+body.doc .footer {
+  position: static;
+  margin: 24px auto 0;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
 /* Print: unstick the footer so a printed copy doesn't lose it. */
