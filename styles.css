@@ -7,6 +7,41 @@
    No framework, no JS-driven layout. Pure CSS + system fonts fallback.
    ======================================================================== */
 
+/* =========================================================================
+   Roboto (self-hosted, Apache 2.0)
+   Two .woff2 files in assets/fonts/ cover everything we need:
+     - latin       — ASCII, Western European accents (English)
+     - latin-ext   — extra Latin (German umlauts, ß, Czech, Polish, etc.)
+   v51 ships as a variable font, so a single file per subset covers
+   every weight (100–900). Browser picks the right interpolated weight
+   from font-weight: 400 / 500 / 600 declarations elsewhere in the file.
+   font-display: swap means the page renders immediately in the system
+   fallback and re-flows to Roboto when the .woff2 finishes loading
+   (typically within the first paint on a warm cache, ~50ms on a cold
+   one over Pages' CDN).
+   ======================================================================== */
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("assets/fonts/roboto-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("assets/fonts/roboto-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
 :root {
   /* Light-mode palette (from Assets.xcassets/wv*.colorset) */
   --wv-background: #ffffff;
@@ -15,6 +50,14 @@
   --wv-surface: #f1f2f3;     /*  rgb(241, 242, 243) — pill / capsules  */
   --wv-border: #e2e2e5;      /*  rgb(226, 226, 229) — hairline borders */
   --wv-accent: #0a84ff;      /*  rgb(10, 132, 255)  — Apple system blue */
+
+  /* Primary-CTA blue. Sourced from the iOS LinkedIn-import sheet's
+     "Upload LinkedIn Archive" capsule (LinkedInImportSheet.swift:356,
+     #0A66C2). Slightly cooler and more saturated than the iOS system
+     blue — feels intentional and brand-coded rather than borrowed
+     from the OS. Light mode only; dark mode falls back to wvAccent
+     (the iOS system blue holds up better on a near-black surface). */
+  --cta-blue: #0a66c2;
 
   /* Fluid type scale anchored on the iOS pt sizes. The wordmark is
      40pt on iOS; we let it scale a touch larger on big screens and
@@ -39,6 +82,11 @@
     --wv-secondary:  #676a6f; /*  rgb(103, 106, 111) */
     --wv-surface:    #222224; /*  rgb(34, 34, 36)    */
     --wv-border:     #2a2a2d; /*  rgb(42, 42, 45)    */
+    /* Dark mode: the LinkedIn-import blue (#0A66C2) reads heavy on
+       a near-black surface. Fall back to the iOS system blue, which
+       has a slightly higher luminance and reads brighter without
+       losing the "primary CTA" weight. */
+    --cta-blue: var(--wv-accent);
   }
 }
 
@@ -229,7 +277,10 @@ body {
   height: 54px;
   border: 0;
   border-radius: 999px;
-  background: var(--wv-accent);
+  /* Sourced from the iOS LinkedIn-import capsule
+     (LinkedInImportSheet.swift:356). In dark mode this resolves to
+     wvAccent — see the @media block at the top of this file. */
+  background: var(--cta-blue);
   color: #ffffff;
   font-family: inherit;
   font-size: 16px;
@@ -250,7 +301,7 @@ body {
 }
 
 .access-submit:focus-visible {
-  outline: 2px solid var(--wv-accent);
+  outline: 2px solid var(--cta-blue);
   outline-offset: 3px;
 }
 
@@ -391,12 +442,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  /* 40% tighter than the previous 4px stack gap, so the copyright and
+     legal-links lines read as a tighter visual unit rather than two
+     independent rows. */
+  gap: 2.4px;
   padding: 16px 24px max(16px, env(safe-area-inset-bottom));
   text-align: center;
   color: var(--wv-secondary);
   font-size: var(--t-footer);
-  line-height: 1.35;       /* Apple-style footer leading */
+  line-height: 1.35;
 }
 
 .footer-copy {
