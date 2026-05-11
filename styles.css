@@ -582,7 +582,14 @@ body.doc {
 }
 
 .doc-stage {
-  flex: 1;
+  /* Natural height, NOT flex: 1 stretched. The previous flex: 1 made
+     the stage absorb all leftover viewport space, which pushed the
+     footer to the very bottom of the viewport and produced a big
+     empty gap between the last paragraph and the footer on tall
+     desktop viewports. The doc page is content-driven — the footer
+     should follow the content directly, with a comfortable but
+     bounded gap. Any leftover viewport space now flows below the
+     footer instead of between content and footer. */
   width: 100%;
   /* Editorial-document max-width. Modern legal / docs pages on
      premium apps land in the 720–800px range so a line of 15px
@@ -591,7 +598,7 @@ body.doc {
      for a phone reading view, not a desktop one. */
   max-width: 760px;
   margin: 0 auto;
-  padding: 48px 24px 64px;
+  padding: 48px 24px 40px;
   padding-top: max(48px, calc(env(safe-area-inset-top) + 32px));
   text-align: left;
 }
@@ -768,7 +775,11 @@ body.doc {
    already places the footer in-flow via body's flex column + .stage's
    flex-grow — nothing extra needed there. */
 body.doc .footer {
-  margin: 24px auto 0;
+  /* Tight margin to the last content paragraph above. Combined with
+     the doc-stage's 40px bottom padding, total visual gap from the
+     last line of content to the footer line is ~56px — comfortable
+     but not yawning. */
+  margin: 16px auto 0;
   padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
