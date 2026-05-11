@@ -621,10 +621,10 @@ body.doc {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  /* Tight 8px between logo and wordmark — matches the home page's
-     gap-to-logo-size ratio (24/160 ≈ 0.15) at the doc-page scale
-     (8/56 ≈ 0.14). The stack reads as one element, not two. */
-  gap: 8px;
+  /* 18px between logo and wordmark — gives the brand stack more
+     breathing room than the home page's gap proportion. The stack
+     still reads as one element. */
+  gap: 18px;
   text-decoration: none;
   color: inherit;
   border-radius: 8px;
@@ -637,13 +637,14 @@ body.doc {
 }
 
 .doc-logo {
-  width: 56px;
-  height: 56px;
+  /* 30% larger than the previous 56px (= 72.8 → 73). */
+  width: 73px;
+  height: 73px;
   display: block;
-  /* Same -2px optical-centre nudge the home logo uses (proportionally
-     scaled from -6px at 160px down to -2px at 56px). The brand block
-     reads as visually balanced instead of low-anchored. */
-  margin-bottom: -2px;
+  /* Optical-centre nudge proportional to the home logo's -6px @ 160px.
+     At 73px the equivalent is ~-3px, which keeps the brand stack
+     visually balanced instead of low-anchored. */
+  margin-bottom: -3px;
 }
 
 .doc-logo img {
