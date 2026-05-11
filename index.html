@@ -13,26 +13,46 @@
       content="Relivance is a premium relationship-intelligence app for iOS. Private early access is opening soon."
     />
 
-    <!-- Open Graph / social previews -->
+    <!-- Open Graph / social previews. iMessage (and most other rich-link
+         scrapers) need a RASTER og:image — SVGs are silently ignored.
+         The 1200×630 PNG is what iMessage renders above the title +
+         description on the Rich Link card. -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Relivance" />
     <meta property="og:title" content="Relivance" />
     <meta
       property="og:description"
-      content="Your network is bigger than your memory. Private early access is opening soon."
+      content="Your network is bigger than your memory."
     />
     <meta property="og:url" content="https://relivance.app/" />
-    <meta property="og:image" content="https://relivance.app/assets/og-image.svg" />
+    <meta property="og:image" content="https://relivance.app/assets/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Relivance. Your network is bigger than your memory."
+    />
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Relivance" />
     <meta
       name="twitter:description"
-      content="Your network is bigger than your memory. Private early access is opening soon."
+      content="Your network is bigger than your memory."
     />
-    <meta name="twitter:image" content="https://relivance.app/assets/og-image.svg" />
+    <meta name="twitter:image" content="https://relivance.app/assets/og-image.png" />
+    <meta
+      name="twitter:image:alt"
+      content="Relivance. Your network is bigger than your memory."
+    />
 
-    <!-- Favicon -->
+    <!-- Favicon + iOS home-screen icon. Keep the SVG favicon for modern
+         desktop browsers (sharp at any size), but ship a 180×180 PNG
+         for iOS home-screen bookmarks and Safari's share UI — those
+         surfaces can't read SVGs. -->
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <link rel="apple-touch-icon" href="assets/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png" />
 
     <!-- Roboto, self-hosted (Apache 2.0). See styles.css @font-face block.
          Preload the latin subset because every page renders English copy
