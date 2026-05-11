@@ -51,12 +51,13 @@
   --wv-border: #e2e2e5;      /*  rgb(226, 226, 229) — hairline borders */
   --wv-accent: #0a84ff;      /*  rgb(10, 132, 255)  — Apple system blue */
 
-  /* Primary-CTA blue. Sourced from the iOS LinkedIn-import sheet's
-     "Upload LinkedIn Archive" capsule (LinkedInImportSheet.swift:356,
-     #0A66C2). Slightly cooler and more saturated than the iOS system
-     blue — feels intentional and brand-coded rather than borrowed
-     from the OS. Applied in both light and dark mode. */
-  --cta-blue: #0a66c2;
+  /* Primary-CTA blue. Light mode uses the darker stop of the brand
+     logo's diagonal gradient (#3D89F7, from assets/logo-light.svg),
+     so the button reads as a direct extension of the logo on white.
+     Dark mode keeps the LinkedIn-import sheet's #0A66C2 (overridden
+     below) — that deeper, cooler blue holds the surface weight on
+     near-black better than the lighter logo blue. */
+  --cta-blue: #3d89f7;
 
   /* Fluid type scale anchored on the iOS pt sizes. The wordmark is
      40pt on iOS; we let it scale a touch larger on big screens and
@@ -83,9 +84,12 @@
     --wv-secondary:  #676a6f; /*  rgb(103, 106, 111) */
     --wv-surface:    #222224; /*  rgb(34, 34, 36)    */
     --wv-border:     #2a2a2d; /*  rgb(42, 42, 45)    */
-    /* --cta-blue intentionally NOT overridden here — the LinkedIn
-       brand blue applies in both light and dark mode so the CTA
-       reads consistently across appearances. */
+    /* Dark mode: switch the CTA to the deeper LinkedIn-import blue
+       (#0A66C2). The lighter logo-derived blue used in light mode
+       (#3D89F7) reads thin on a near-black surface; the deeper
+       LinkedIn blue holds visual weight without competing with the
+       wordmark or feeling like a stock OS button. */
+    --cta-blue: #0a66c2;
   }
 }
 
