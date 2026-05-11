@@ -59,6 +59,14 @@
      near-black better than the lighter logo blue. */
   --cta-blue: #3d89f7;
 
+  /* "Relivance" wordmark colour inside the doc-page header
+     (privacy / terms). Light mode picks up the same logo-gradient
+     blue as the CTA so the wordmark reads as part of the brand
+     mark above it. Dark mode is overridden to white below — full
+     primary luminance for a clean monochrome treatment that holds
+     against the silver-disc dark logo without competing colour. */
+  --doc-brand-color: #3d89f7;
+
   /* Fluid type scale anchored on the iOS pt sizes. The wordmark is
      40pt on iOS; we let it scale a touch larger on big screens and
      not below 32px on phones. The slogan locks 16–19px range. */
@@ -90,6 +98,12 @@
        LinkedIn blue holds visual weight without competing with the
        wordmark or feeling like a stock OS button. */
     --cta-blue: #0a66c2;
+
+    /* Doc-page brand wordmark in dark mode: white. Clean monochrome
+       against the silver-disc dark logo (the logo's own dark variant
+       runs white → cool silver, so the wordmark in pure white sits
+       as a calm continuation of the disc colour). */
+    --doc-brand-color: #ffffff;
   }
 }
 
@@ -660,11 +674,14 @@ body.doc {
   /* Matches .doc-title's fluid type scale below so the "Relivance"
      wordmark in the header and the "Privacy Policy" / "Terms" title
      beneath it read as visually-paired peers in the same typographic
-     hierarchy — same size, same line-height, same letter-spacing. */
+     hierarchy — same size, same line-height, same letter-spacing.
+     Colour is the only thing that differs: the wordmark picks up
+     --doc-brand-color (logo-blue in light, white in dark), while the
+     title stays at primary text colour. */
   font-size: clamp(26px, 3.2vw, 32px);
   line-height: 1.15;
   letter-spacing: -0.015em;
-  color: var(--wv-primary);
+  color: var(--doc-brand-color);
 }
 
 .doc-title {
