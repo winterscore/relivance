@@ -68,10 +68,12 @@
      no letter-spacing). 11px reads stingy; 12px reads premium. */
   --t-footer:   12px;
 
-  /* Vertical rhythm: match the AuthView VStack(spacing:) values. */
-  --gap-logo-title: 24px;     /* outer stack spacing */
-  --gap-title-slogan: 10px;   /* inner stack spacing */
-  --gap-brand-status: 56px;
+  /* Vertical rhythm: match the AuthView VStack(spacing:) values
+     for the in-brand-block spacing. The structural top/middle/bottom
+     gaps no longer need a CSS variable — .stage now uses
+     justify-content: space-evenly to distribute them automatically. */
+  --gap-logo-title: 24px;     /* outer stack spacing (logo → wordmark) */
+  --gap-title-slogan: 10px;   /* inner stack spacing (wordmark → slogan) */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -103,6 +105,17 @@ body {
   min-height: 100svh;
   background: var(--wv-background);
   color: var(--wv-primary);
+}
+
+body {
+  /* Flex column so the .stage can flex-grow to absorb the available
+     viewport height while the footer sits in-flow right beneath it
+     at the bottom of the screen. This is the structural plumbing
+     that lets `.stage` use `justify-content: space-evenly` to
+     produce three EXACTLY equal gaps (top-of-viewport→logo,
+     slogan→access-heading, button→footer). */
+  display: flex;
+  flex-direction: column;
   /* Inter is the font Linear & many modern app marketing sites
      reach for. We ship Roboto specifically because the iOS app
      uses Roboto SemiBold for the wordmark — keeping the web side
@@ -117,20 +130,34 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Outer layout: brand block centred, capture form below, footer pinned.
-   Bottom padding reserves room for the now two-line footer (copy +
-   legal links) so the form's privacy note never crashes into it. */
+/* Outer layout: brand block + capture form with THREE EXACTLY EQUAL
+   structural gaps:
+     1. top-of-viewport → logo
+     2. slogan        → "Private early access" heading
+     3. submit button → footer (first line, the copyright)
+   How this works:
+   - body is a flex column with min-height 100svh.
+   - .stage has `flex: 1 0 auto`, so it absorbs all viewport space
+     above the footer (the footer sits in-flow at the bottom).
+   - .stage uses `justify-content: space-evenly`, which distributes
+     its two flex children (brand + access) with mathematically equal
+     empty space around each: 1/3 above brand, 1/3 between them, 1/3
+     below access. The bottom 1/3 sits between the access block and
+     the footer's top edge, giving us the third equal gap "for free".
+   - Padding-top picks up the safe-area inset on notched devices, so
+     content never renders under a notch. This is added on top of the
+     space-evenly gap; visually the top gap is `top-flex-space +
+     safe-area-inset` on those devices, which is the right thing
+     (the inset is consumed by the system, not by the user). */
 .stage {
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--gap-brand-status);
-  min-height: 100vh;
-  min-height: 100svh;
-  padding: 64px 24px 96px;
-  padding-top: max(64px, env(safe-area-inset-top));
-  padding-bottom: max(96px, calc(env(safe-area-inset-bottom) + 80px));
+  justify-content: space-evenly;
+  padding-top: env(safe-area-inset-top);
+  padding-left: 24px;
+  padding-right: 24px;
   text-align: center;
 }
 
@@ -218,11 +245,15 @@ body {
 
 .access-heading {
   margin: 0;
-  font-size: 15px;
+  /* Same Roboto family (inherited from body), same weight (400,
+     inherited), same fluid size and line-height as the slogan above
+     the brand block. The two intro-style lines now read as visual
+     peers in typography — only the colour stays subordinate
+     (wvSecondary) so the slogan keeps the hero role. */
+  font-size: var(--t-slogan);
   line-height: 1.4;
   color: var(--wv-secondary);
   text-align: center;
-  letter-spacing: 0.01em;
 }
 
 .access-form {
@@ -230,7 +261,10 @@ body {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  margin: 4px 0 0;
+  /* No margin-top here: the .access container's own `gap: 12px`
+     already sits between the heading and this form. Equal 12px
+     stacks: heading → input → button, all the same rhythm. */
+  margin: 0;
 }
 
 .access-input {
@@ -427,22 +461,21 @@ body {
   border: 0;
 }
 
-/* Footer sits flush to the bottom on the home page (position: fixed),
-   normal flow on document pages (privacy / terms — see .doc-stage
-   below, which overrides .footer to static so a long doc can scroll
-   the footer in naturally). */
+/* Single-row footer. Sits at the bottom of the viewport via the
+   body's flex layout (see `body` rule above): the body is a flex
+   column with min-height: 100svh and the .stage uses flex-grow to
+   absorb all extra viewport height, which automatically pins the
+   footer to the bottom without `position: fixed`.
+   The footer is now ONE line — copyright dot Privacy dot Terms —
+   rather than two stacked rows, which reads tighter and frees up
+   vertical space for the brand block above. */
 .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
-  /* 40% tighter than the previous 4px stack gap, so the copyright and
-     legal-links lines read as a tighter visual unit rather than two
-     independent rows. */
-  gap: 2.4px;
+  justify-content: center;
+  gap: 5px;
   padding: 16px 24px max(16px, env(safe-area-inset-bottom));
   text-align: center;
   color: var(--wv-secondary);
@@ -488,23 +521,14 @@ body {
   opacity: 0.6;
 }
 
-/* Tablet & desktop: a bit more breathing room above the brand
-   block. The slogan already fits on a single line at every
-   viewport thanks to the unconstrained .slogan rule above —
-   nothing to override here. */
-@media (min-width: 768px) {
-  .stage {
-    gap: 72px;
-    padding-top: max(96px, env(safe-area-inset-top));
-  }
-}
-
+/* Desktop wordmark steps up slightly so the "Relivance" headline holds
+   the right visual weight on larger viewports. The structural gaps
+   (top, slogan→heading, button→footer) auto-scale via .stage's
+   justify-content: space-evenly, so no per-breakpoint gap override is
+   needed any more. */
 @media (min-width: 1280px) {
   :root {
     --t-wordmark: clamp(40px, 4vw, 56px);
-  }
-  .stage {
-    gap: 80px;
   }
 }
 
@@ -681,19 +705,19 @@ body.doc {
   margin-bottom: 4px;
 }
 
-/* On document pages the footer flows naturally instead of fixing to
-   the bottom of the viewport — long copy should scroll past the
-   footer cleanly. */
+/* On document pages the footer sits naturally below the doc-stage so
+   long policy copy scrolls the footer in at the bottom. The home page
+   already places the footer in-flow via body's flex column + .stage's
+   flex-grow — nothing extra needed there. */
 body.doc .footer {
-  position: static;
   margin: 24px auto 0;
   padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
-/* Print: unstick the footer so a printed copy doesn't lose it. */
+/* Print: keep the footer immediately after content with a comfortable
+   gap so a printed page doesn't end on the button. */
 @media print {
   .footer {
-    position: static;
     margin-top: 64px;
   }
 }
