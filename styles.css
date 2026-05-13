@@ -539,7 +539,8 @@ body {
 }
 
 .footer-nav a:hover,
-.footer-nav a:focus-visible {
+.footer-nav a:focus-visible,
+.footer-nav a[aria-current="page"] {
   color: var(--wv-primary);
 }
 
