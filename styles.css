@@ -51,21 +51,23 @@
   --wv-border: #e2e2e5;      /*  rgb(226, 226, 229) — hairline borders */
   --wv-accent: #0a84ff;      /*  rgb(10, 132, 255)  — Apple system blue */
 
-  /* Primary-CTA blue. Light mode uses the darker stop of the brand
-     logo's diagonal gradient (#3D89F7, from assets/logo-light.svg),
-     so the button reads as a direct extension of the logo on white.
-     Dark mode keeps the LinkedIn-import sheet's #0A66C2 (overridden
-     below) — that deeper, cooler blue holds the surface weight on
-     near-black better than the lighter logo blue. */
-  --cta-blue: #3d89f7;
+  /* Primary-CTA blue. Light mode uses the canonical Relivance active
+     blue (#5997DF) — the same colour the iOS app applies to its
+     paywall and onboarding "Begin" CTAs — so the website button reads
+     as one brand with the app. Dark mode keeps the LinkedIn-import
+     sheet's #0A66C2 (overridden below) — that deeper, cooler blue
+     holds the surface weight on near-black better than the lighter
+     active blue. */
+  --cta-blue: #5997DF;
 
   /* "Relivance" wordmark colour inside the doc-page header
-     (privacy / terms). Light mode picks up the same logo-gradient
-     blue as the CTA so the wordmark reads as part of the brand
-     mark above it. Dark mode is overridden to white below — full
-     primary luminance for a clean monochrome treatment that holds
-     against the silver-disc dark logo without competing colour. */
-  --doc-brand-color: #3d89f7;
+     (privacy / impressum / terms). Light mode uses primary text
+     (black) so the wordmark sits as a calm monochrome label beneath
+     the brand disc rather than a second competing blue. Dark mode is
+     overridden to white below — full primary luminance for a clean
+     monochrome treatment that holds against the silver-disc dark
+     logo without competing colour. */
+  --doc-brand-color: var(--wv-primary);
 
   /* Fluid type scale anchored on the iOS pt sizes. The wordmark is
      40pt on iOS; we let it scale a touch larger on big screens and
