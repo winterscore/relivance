@@ -683,9 +683,10 @@ body.doc {
      wordmark in the header and the "Privacy Policy" / "Terms" title
      beneath it read as visually-paired peers in the same typographic
      hierarchy — same size, same line-height, same letter-spacing.
-     Colour is the only thing that differs: the wordmark picks up
-     --doc-brand-color (logo-blue in light, white in dark), while the
-     title stays at primary text colour. */
+     The wordmark text picks up --doc-brand-color: primary text
+     (black via --wv-primary) in light mode and white in dark mode.
+     This only colours the "Relivance" text; the logo image above is
+     unaffected. */
   font-size: clamp(26px, 3.2vw, 32px);
   line-height: 1.15;
   letter-spacing: -0.015em;
